@@ -14,9 +14,19 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Get Modified Files
+        id: files
+        run: |
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          FILES=$(gh pr view "$PR_NUMBER" --json files --jq '.files[].path')
+          
+          # Pass files to next step
+          echo "CHANGED_FILES<<EOF" >> $GITHUB_ENV
+          echo "$FILES" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Validate Author Folder
         run: |
@@ -100,9 +110,6 @@ jobs:
 
           SINGLE_ROLL=$((10#$ASSIGNED_ROLL))
           PADDED_ROLL=$(printf "%02d" "$SINGLE_ROLL")
-
-          git fetch origin main:refs/remotes/origin/main
-          CHANGED_FILES=$(git diff --name-only origin/main...HEAD)
 
           echo "Files modified in this PR:"
           echo "$CHANGED_FILES"
