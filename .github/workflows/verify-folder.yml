@@ -1,9 +1,22 @@
-- name: Validate Author Folder
+name: Validate Author Directory
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Validate Author Folder
         run: |
           AUTHOR="${{ github.actor }}"
           echo "PR Author: $AUTHOR"
 
-          # 1. ADMIN BYPASS: Allow admins to edit/create anything
+          # 1. ADMIN BYPASS
           if [ "$AUTHOR" = "AG349" ] || [ "$AUTHOR" = "4darshh" ] || [ "$AUTHOR" = "BodhiCSE2025" ]; then
             echo "SUCCESS: Admin user '$AUTHOR' detected. Bypassing path check completely."
             exit 0
@@ -78,7 +91,6 @@
             exit 1
           fi
 
-          # Safe evaluation of single and padded roll formats
           SINGLE_ROLL=$((10#$ASSIGNED_ROLL))
           PADDED_ROLL=$(printf "%02d" "$SINGLE_ROLL")
 
@@ -91,14 +103,14 @@
           for FILE in $CHANGED_FILES; do
             [ -z "$FILE" ] && continue
             
-            # Allow strictly if path contains their roll number folder
-            if [[ "$FILE" =~ ^"$PADDED_ROLL"/ ]] || [[ "$FILE" =~ ^"$SINGLE_ROLL"/ ]] || [[ "$FILE" =~ /"$PADDED_ROLL"/ ]] || [[ "$FILE" =~ /"$SINGLE_ROLL"/ ]]; then
+            # STRICT CHECK: Path must start with assigned roll directory
+            if [[ "$FILE" =~ ^"$PADDED_ROLL"/ ]] || [[ "$FILE" =~ ^"$SINGLE_ROLL"/ ]]; then
               echo "ALLOWED: $FILE"
             else
               echo "--------------------------------------------------------"
               echo "ACCESS DENIED!"
               echo "$AUTHOR attempted to modify '$FILE'."
-              echo "Allowed folder: '$PADDED_ROLL/' or '$SINGLE_ROLL/'"
+              echo "Allowed directory root: '$PADDED_ROLL/' or '$SINGLE_ROLL/'"
               echo "--------------------------------------------------------"
               exit 1
             fi
