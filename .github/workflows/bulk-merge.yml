@@ -1,16 +1,131 @@
-name: Bulk Merge Student PRs
+name: Validate and Auto-Merge Student PRs
 
 on:
-  workflow_dispatch:
   pull_request_target:
     types: [opened, synchronize, reopened]
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
-  merge:
+  validate-and-merge:
     runs-on: ubuntu-latest
     steps:
-      - name: Auto-Merge PR
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Validate Author Folder
         run: |
-          gh pr merge ${{ github.event.pull_request.number }} --squash --admin --delete-branch || true
+          AUTHOR="${{ github.event.pull_request.user.login }}"
+          echo "PR Author: $AUTHOR"
+
+          # 1. ADMIN BYPASS
+          if [ "$AUTHOR" = "AG349" ] || [ "$AUTHOR" = "4darshh" ] || [ "$AUTHOR" = "BodhiCSE2025" ]; then
+            echo "SUCCESS: Admin user '$AUTHOR' detected. Bypassing path check completely."
+            exit 0
+          fi
+
+          # 2. Map GitHub Usernames to assigned Roll Numbers
+          declare -A ROLL_MAP
+          ROLL_MAP["Disha0007-dev"]="01"
+          ROLL_MAP["KomalChoudhury"]="02"
+          ROLL_MAP["najib-aftab"]="03"
+          ROLL_MAP["SUDIP-MANDAL01"]="04"
+          ROLL_MAP["Shreyanka07"]="05"
+          ROLL_MAP["akshitasaha1006"]="06"
+          ROLL_MAP["Pritammandal18"]="07"
+          ROLL_MAP["SKFARDIN86"]="08"
+          ROLL_MAP["soumyadipdinda"]="09"
+          ROLL_MAP["ANU06-coder"]="10"
+          ROLL_MAP["Ankithalder311"]="12"
+          ROLL_MAP["PiyaliSahoo"]="16"
+          ROLL_MAP["tiyasa2"]="17"
+          ROLL_MAP["BijoyRoyxxx"]="18"
+          ROLL_MAP["ishikamahto8"]="19"
+          ROLL_MAP["manikmaity721635-dot"]="21"
+          ROLL_MAP["SauptikMukhopadhyay"]="22"
+          ROLL_MAP["quantum-nil"]="23"
+          ROLL_MAP["sunendu51"]="24"
+          ROLL_MAP["sayanmona1"]="25"
+          ROLL_MAP["Prithwis0404"]="26"
+          ROLL_MAP["utsab2006"]="27"
+          ROLL_MAP["debjit48-coders"]="28"
+          ROLL_MAP["Sounika2006"]="29"
+          ROLL_MAP["sibam-01"]="30"
+          ROLL_MAP["deyarpan4484-lang"]="31"
+          ROLL_MAP["ArnikBose"]="32"
+          ROLL_MAP["satarupa133"]="33"
+          ROLL_MAP["Swagata123-eng"]="34"
+          ROLL_MAP["arka202535"]="35"
+          ROLL_MAP["debayanpandey"]="36"
+          ROLL_MAP["suparba03"]="37"
+          ROLL_MAP["jasmin-official7"]="38"
+          ROLL_MAP["anjangorai"]="40"
+          ROLL_MAP["atifmd962"]="41"
+          ROLL_MAP["arghyasikder999-coder"]="43"
+          ROLL_MAP["reeshavchoudhary86-ux"]="44"
+          ROLL_MAP["sriparnamalakar101"]="45"
+          ROLL_MAP["tuhinangshusingha"]="46"
+          ROLL_MAP["siddtanzeel-design"]="47"
+          ROLL_MAP["bidishaa07"]="48"
+          ROLL_MAP["rosavineprotiva"]="50"
+          ROLL_MAP["sahelipore27"]="51"
+          ROLL_MAP["Ankan-2025-Roy"]="52"
+          ROLL_MAP["arijitdutta1608"]="53"
+          ROLL_MAP["bedantachakraborty2000555-cmyk"]="54"
+          ROLL_MAP["Ahitagni-lan"]="55"
+          ROLL_MAP["rohankumarpratihar2006-boop"]="56"
+          ROLL_MAP["smsayanmondal06-svg"]="57"
+          ROLL_MAP["mohanmaji2004-a11y"]="58"
+          ROLL_MAP["simranmandalwork"]="59"
+          ROLL_MAP["dasarpan1596-cmd"]="60"
+          ROLL_MAP["Rahildev27"]="61"
+          ROLL_MAP["MyselfPiyas"]="62"
+          ROLL_MAP["aritro2006"]="65"
+          ROLL_MAP["Arquam06"]="67"
+          ROLL_MAP["Bigneshkumar"]="68"
+          ROLL_MAP["harshranjan210705-web"]="69"
+          ROLL_MAP["auraoflife7"]="70"
+
+          ASSIGNED_ROLL="${ROLL_MAP[$AUTHOR]}"
+
+          if [ -z "$ASSIGNED_ROLL" ]; then
+            echo "ERROR: Username '$AUTHOR' is not registered in ROLL_MAP."
+            exit 1
+          fi
+
+          SINGLE_ROLL=$((10#$ASSIGNED_ROLL))
+          PADDED_ROLL=$(printf "%02d" "$SINGLE_ROLL")
+
+          git fetch origin main:refs/remotes/origin/main
+          CHANGED_FILES=$(git diff --name-only origin/main...HEAD)
+
+          echo "Files modified in this PR:"
+          echo "$CHANGED_FILES"
+
+          for FILE in $CHANGED_FILES; do
+            [ -z "$FILE" ] && continue
+            
+            # Ensure path starts with assigned roll directory
+            if [[ "$FILE" =~ ^"$PADDED_ROLL"/ ]] || [[ "$FILE" =~ ^"$SINGLE_ROLL"/ ]]; then
+              echo "ALLOWED: $FILE"
+            else
+              echo "--------------------------------------------------------"
+              echo "ACCESS DENIED!"
+              echo "$AUTHOR attempted to modify '$FILE'."
+              echo "Allowed directory root: '$PADDED_ROLL/' or '$SINGLE_ROLL/'"
+              echo "--------------------------------------------------------"
+              exit 1
+            fi
+          done
+
+          echo "SUCCESS: All modified files belong strictly to folder '$ASSIGNED_ROLL'."
+
+      - name: Auto-Merge Validated PR
+        run: |
+          gh pr merge ${{ github.event.pull_request.number }} --squash --admin --delete-branch
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
