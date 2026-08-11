@@ -21,7 +21,6 @@ jobs:
           PR_NUMBER="${{ github.event.pull_request.number }}"
           FILES=$(gh pr view "$PR_NUMBER" --json files --jq '.files[].path')
           
-          # Pass files to next step
           echo "CHANGED_FILES<<EOF" >> $GITHUB_ENV
           echo "$FILES" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
@@ -33,7 +32,7 @@ jobs:
           AUTHOR="${{ github.event.pull_request.user.login }}"
           echo "PR Author: $AUTHOR"
 
-          # 1. ADMIN BYPASS
+          # 1. ADMIN BYPASS: Full access to root directory & all files
           if [ "$AUTHOR" = "AG349" ] || [ "$AUTHOR" = "4darshh" ] || [ "$AUTHOR" = "BodhiCSE2025" ]; then
             echo "SUCCESS: Admin user '$AUTHOR' detected. Bypassing path check completely."
             exit 0
@@ -117,20 +116,22 @@ jobs:
           for FILE in $CHANGED_FILES; do
             [ -z "$FILE" ] && continue
             
-            # Ensure path starts strictly with assigned roll directory
-            if [[ "$FILE" =~ ^"$PADDED_ROLL"/ ]] || [[ "$FILE" =~ ^"$SINGLE_ROLL"/ ]]; then
+            # STRICT CHECK: Must be inside a subfolder matching date pattern (e.g. DD-MM-YYYY/ROLL/...)
+            # Rejects root modifications directly in main branch (e.g., 27/Project.c or root files)
+            if [[ "$FILE" =~ ^[0-9]{2}-[0-9]{2}-[0-9]{4}/"$PADDED_ROLL"/ ]] || [[ "$FILE" =~ ^[0-9]{2}-[0-9]{2}-[0-9]{4}/"$SINGLE_ROLL"/ ]]; then
               echo "ALLOWED: $FILE"
             else
               echo "--------------------------------------------------------"
               echo "ACCESS DENIED!"
               echo "$AUTHOR attempted to modify '$FILE'."
-              echo "Allowed directory root: '$PADDED_ROLL/' or '$SINGLE_ROLL/'"
+              echo "Students can ONLY modify files inside: '<DATE_FOLDER>/$PADDED_ROLL/' or '<DATE_FOLDER>/$SINGLE_ROLL/'"
+              echo "Editing root files or outer directories directly is strictly reserved for Admins."
               echo "--------------------------------------------------------"
               exit 1
             fi
           done
 
-          echo "SUCCESS: All modified files belong strictly to folder '$ASSIGNED_ROLL'."
+          echo "SUCCESS: All modified files belong strictly to date subfolder for roll '$ASSIGNED_ROLL'."
 
       - name: Auto-Merge Validated PR
         run: |
