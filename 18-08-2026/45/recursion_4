@@ -1,0 +1,34 @@
+#include <stdio.h>
+
+int digitSum(long long n)
+{
+    if (n == 0)
+        return 0;
+
+    return (n % 10) + digitSum(n / 10);
+}
+
+int digitalRoot(long long n)
+{
+    if (n < 10)
+        return n;
+
+    return digitalRoot(digitSum(n));
+}
+
+int main()
+{
+    long long n;
+    int sum, root;
+
+    printf("Enter a non-negative integer: ");
+    scanf("%lld", &n);
+
+    sum = digitSum(n);
+    root = digitalRoot(n);
+
+    printf("Digit Sum = %d\n", sum);
+    printf("Digital Root = %d\n", root);
+
+    return 0;
+}
