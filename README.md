@@ -1,10 +1,11 @@
-# DSA-Batch-2025-26-CSE.-Sec-A
+# PPL-Batch-2025-26-CSE-Sec-A
 
 ## 📌 Repository Rules & Guidelines
+## Date Folder Format is MM-DD-YYY
 
 To keep the repository clean and automated, please read and follow these rules strictly:
 
-1. **Folder Scoping**: You are **ONLY** permitted to create or modify files inside your assigned **Roll Number Folder** (e.g., `04/` or `29-07-2026/04/`).
+1. **Folder Scoping**: You are **ONLY** permitted to create or modify files inside your assigned **Roll Number Folder** (e.g., `07-29-2026/04/`).
 2. **Strict Filename Formatting (NO SPACES ALLOWED)**: Filenames **MUST NOT contain any spaces**. Always use underscores (`_`) or hyphens (`-`) to separate words.
    * ❌ **Incorrect:** `binary search.c` or `insertion _nth_position.c`
    * ✅ **Correct:** `binary_search.c` or `insertion_nth_position.c`
