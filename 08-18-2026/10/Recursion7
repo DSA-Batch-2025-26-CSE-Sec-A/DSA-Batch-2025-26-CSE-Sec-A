@@ -1,0 +1,44 @@
+Program:
+#include <stdio.h>
+long long moves = 0;
+void towerOfHanoi(int n, char source, char auxiliary, char destination)
+{
+    if (n == 0)
+        return;
+    towerOfHanoi(n - 1, source, destination, auxiliary);
+    printf("Move disc %d from %c to %c\n",
+           n, source, destination);
+    moves++;
+    towerOfHanoi(n - 1, auxiliary, source, destination);
+}
+int main()
+{
+    int n;
+    scanf("%d", &n);
+    towerOfHanoi(n, 'A', 'B', 'C');
+    printf("Total moves = %lld\n", moves);
+    return 0;
+}
+Sample Input:
+3
+Output:
+Move disc 1 from A to C
+Move disc 2 from A to B
+Move disc 1 from C to B
+Move disc 3 from A to C
+Move disc 1 from B to A
+Move disc 2 from B to C
+Move disc 1 from A to C
+Total moves = 7
+Recurrence:
+M(n) = 2M(n-1) + 1, with M(0) = 0.
+Proof by induction:
+Base case: n=1. M(1)=1=2^1-1.
+Induction hypothesis:
+Assume M(k)=2^k-1.
+For k+1:
+M(k+1) = 2M(k)+1
+        = 2(2^k-1)+1
+        = 2^(k+1)-1.
+Hence, by mathematical induction:
+M(n) = 2^n - 1.
