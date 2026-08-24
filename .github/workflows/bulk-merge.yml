@@ -33,77 +33,81 @@ jobs:
           echo "PR Author: $AUTHOR"
 
           # 1. ADMIN BYPASS: Full access to root directory & all files
-          if [ "$AUTHOR" = "AG349" ] || [ "$AUTHOR" = "4darshh" ] || [ "$AUTHOR" = "BodhiCSE2025" ]; then
+          if [[ "$AUTHOR" == "AG349" || "$AUTHOR" == "BodhiCSE2025" ]]; then
             echo "SUCCESS: Admin user '$AUTHOR' detected. Bypassing path check completely."
             exit 0
           fi
 
           # 2. Map GitHub Usernames to assigned Roll Numbers
           declare -A ROLL_MAP
-          ROLL_MAP["Disha0007-dev"]="01"
-          ROLL_MAP["KomalChoudhury"]="02"
-          ROLL_MAP["najib-aftab"]="03"
-          ROLL_MAP["SUDIP-MANDAL01"]="04"
-          ROLL_MAP["Shreyanka07"]="05"
-          ROLL_MAP["akshitasaha1006"]="06"
-          ROLL_MAP["Pritammandal18"]="07"
-          ROLL_MAP["SKFARDIN86"]="08"
-          ROLL_MAP["soumyadipdinda"]="09"
-          ROLL_MAP["ANU06-coder"]="10"
-          ROLL_MAP["Ankithalder311"]="12"
-          ROLL_MAP["PiyaliSahoo"]="16"
-          ROLL_MAP["tiyasa2"]="17"
-          ROLL_MAP["BijoyRoyxxx"]="18"
-          ROLL_MAP["ishikamahto8"]="19"
-          ROLL_MAP["manikmaity721635-dot"]="21"
-          ROLL_MAP["SauptikMukhopadhyay"]="22"
-          ROLL_MAP["quantum-nil"]="23"
-          ROLL_MAP["sunendu51"]="24"
-          ROLL_MAP["sayanmona1"]="25"
-          ROLL_MAP["Prithwis0404"]="26"
-          ROLL_MAP["utsab2006"]="27"
-          ROLL_MAP["debjit48-coders"]="28"
-          ROLL_MAP["Sounika2006"]="29"
-          ROLL_MAP["sibam-01"]="30"
-          ROLL_MAP["deyarpan4484-lang"]="31"
-          ROLL_MAP["ArnikBose"]="32"
-          ROLL_MAP["satarupa133"]="33"
-          ROLL_MAP["Swagata123-eng"]="34"
-          ROLL_MAP["arka202535"]="35"
-          ROLL_MAP["debayanpandey"]="36"
-          ROLL_MAP["suparba03"]="37"
-          ROLL_MAP["jasmin-official7"]="38"
-          ROLL_MAP["anjangorai"]="40"
-          ROLL_MAP["atifmd962"]="41"
-          ROLL_MAP["arghyasikder999-coder"]="43"
-          ROLL_MAP["reeshavchoudhary86-ux"]="44"
-          ROLL_MAP["sriparnamalakar101"]="45"
-          ROLL_MAP["tuhinangshusingha"]="46"
-          ROLL_MAP["siddtanzeel-design"]="47"
-          ROLL_MAP["bidishaa07"]="48"
-          ROLL_MAP["rosavineprotiva"]="50"
-          ROLL_MAP["sahelipore27"]="51"
-          ROLL_MAP["Ankan-2025-Roy"]="52"
-          ROLL_MAP["arijitdutta1608"]="53"
-          ROLL_MAP["bedantachakraborty2000555-cmyk"]="54"
-          ROLL_MAP["Ahitagni-lan"]="55"
-          ROLL_MAP["rohankumarpratihar2006-boop"]="56"
-          ROLL_MAP["smsayanmondal06-svg"]="57"
-          ROLL_MAP["mohanmaji2004-a11y"]="58"
-          ROLL_MAP["simranmandalwork"]="59"
-          ROLL_MAP["dasarpan1596-cmd"]="60"
-          ROLL_MAP["Rahildev27"]="61"
-          ROLL_MAP["MyselfPiyas"]="62"
-          ROLL_MAP["aritro2006"]="65"
-          ROLL_MAP["Arquam06"]="67"
-          ROLL_MAP["Bigneshkumar"]="68"
-          ROLL_MAP["harshranjan210705-web"]="69"
-          ROLL_MAP["auraoflife7"]="70"
+          ROLL_MAP=(
+            ["Disha0007-dev"]="01"
+            ["KomalChoudhury"]="02"
+            ["najib-aftab"]="03"
+            ["SUDIP-MANDAL01"]="04"
+            ["Shreyanka07"]="05"
+            ["akshitasaha1006"]="06"
+            ["Pritammandal18"]="07"
+            ["SKFARDIN86"]="08"
+            ["soumyadipdinda"]="09"
+            ["ANU06-coder"]="10"
+            ["Ankithalder311"]="12"
+            ["PiyaliSahoo"]="16"
+            ["tiyasa2"]="17"
+            ["BijoyRoyxxx"]="18"
+            ["ishikamahto8"]="19"
+            ["manikmaity721635-dot"]="21"
+            ["SauptikMukhopadhyay"]="22"
+            ["quantum-nil"]="23"
+            ["sunendu51"]="24"
+            ["sayanmona1"]="25"
+            ["Prithwis0404"]="26"
+            ["utsab2006"]="27" 
+            ["debjit48-coders"]="28"
+            ["Sounika2006"]="29"
+            ["sibam-01"]="30"
+            ["deyarpan4484-lang"]="31"
+            ["ArnikBose"]="32"
+            ["satarupa133"]="33"
+            ["Swagata123-eng"]="34"
+            ["arka202535"]="35"
+            ["debayanpandey"]="36"
+            ["suparba03"]="37"
+            ["jasmin-official7"]="38"
+            ["anjangorai"]="40"
+            ["atifmd962"]="41"
+            ["Shirmyman1"]="42"
+            ["arghyasikder999-coder"]="43"
+            ["reeshavchoudhary86-ux"]="44"
+            ["sriparnamalakar101"]="45"
+            ["tuhinangshusingha"]="46"
+            ["siddtanzeel-design"]="47"
+            ["bidishaa07"]="48"
+            ["rosavineprotiva"]="50"
+            ["sahelipore27"]="51"
+            ["Ankan-2025-Roy"]="52"
+            ["arijitdutta1608"]="53"
+            ["bedantachakraborty2000555-cmyk"]="54"
+            ["Ahitagni-lan"]="55"
+            ["rohankumarpratihar2006-boop"]="56"
+            ["smsayanmondal06-svg"]="57"
+            ["mohanmaji2004-a11y"]="58"
+            ["simranmandalwork"]="59"
+            ["dasarpan1596-cmd"]="60"
+            ["Rahildev27"]="61"
+            ["MyselfPiyas"]="62"
+            ["4darshh"]="63"
+            ["aritro2006"]="65"
+            ["Arquam06"]="67"
+            ["Bigneshkumar"]="68"
+            ["harshranjan210705-web"]="69"
+            ["auraoflife7"]="70"
+          )
 
           ASSIGNED_ROLL="${ROLL_MAP[$AUTHOR]}"
 
           if [ -z "$ASSIGNED_ROLL" ]; then
-            echo "ERROR: Username '$AUTHOR' is not registered in ROLL_MAP."
+            echo "ERROR: Username '$AUTHOR' is not registered in the system."
             exit 1
           fi
 
@@ -113,28 +117,33 @@ jobs:
           echo "Files modified in this PR:"
           echo "$CHANGED_FILES"
 
-          for FILE in $CHANGED_FILES; do
+          # 3. STRICT CHECK: Handles spaces in filenames safely
+          FAIL_FLAG=0
+          while IFS= read -r FILE; do
             [ -z "$FILE" ] && continue
             
-            # STRICT CHECK: Must be inside a subfolder matching date pattern (e.g. DD-MM-YYYY/ROLL/...)
-            # Rejects root modifications directly in main branch (e.g., 27/Project.c or root files)
+            # Rejects root modifications, must match DD-MM-YYYY/ROLL/ pattern
             if [[ "$FILE" =~ ^[0-9]{2}-[0-9]{2}-[0-9]{4}/"$PADDED_ROLL"/ ]] || [[ "$FILE" =~ ^[0-9]{2}-[0-9]{2}-[0-9]{4}/"$SINGLE_ROLL"/ ]]; then
-              echo "ALLOWED: $FILE"
+              echo "✅ ALLOWED: $FILE"
             else
-              echo "--------------------------------------------------------"
-              echo "ACCESS DENIED!"
-              echo "$AUTHOR attempted to modify '$FILE'."
-              echo "Students can ONLY modify files inside: '<DATE_FOLDER>/$PADDED_ROLL/' or '<DATE_FOLDER>/$SINGLE_ROLL/'"
-              echo "Editing root files or outer directories directly is strictly reserved for Admins."
-              echo "--------------------------------------------------------"
-              exit 1
+              echo "❌ ACCESS DENIED: '$AUTHOR' attempted to modify '$FILE'"
+              FAIL_FLAG=1
             fi
-          done
+          done <<< "$CHANGED_FILES"
+
+          if [ $FAIL_FLAG -eq 1 ]; then
+            echo "--------------------------------------------------------"
+            echo "Students can ONLY modify files inside: '<DATE_FOLDER>/$PADDED_ROLL/' or '<DATE_FOLDER>/$SINGLE_ROLL/'"
+            echo "Editing root files or outer directories directly is strictly reserved for Admins."
+            echo "--------------------------------------------------------"
+            exit 1
+          fi
 
           echo "SUCCESS: All modified files belong strictly to date subfolder for roll '$ASSIGNED_ROLL'."
 
       - name: Auto-Merge Validated PR
+        if: success() 
         run: |
-          gh pr merge ${{ github.event.pull_request.number }} --squash --admin --delete-branch
+          gh pr merge ${{ github.event.pull_request.number }} --auto --squash --delete-branch
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
