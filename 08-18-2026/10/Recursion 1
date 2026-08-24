@@ -1,0 +1,21 @@
+Program:
+#include <stdio.h>
+long long factorial(int n)
+{
+    if (n == 0 || n == 1)
+        return 1;
+    return n * factorial(n - 1);
+}
+int main()
+{
+    int n;
+    scanf("%d", &n);
+    printf("%lld\n", factorial(n));
+    return 0;
+}
+Sample Input:
+6
+Output:
+720
+Explanation:
+The base case is factorial(0) = 1. For n > 0, the function calls itself with n-1 until it reaches 0.
