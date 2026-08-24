@@ -1,0 +1,50 @@
+#include <stdio.h>
+#include <string.h>
+
+void swap(char *a, char *b)
+{
+    char temp;
+
+    temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+void permute(char str[], int left, int right)
+{
+    int i;
+
+    if (left == right)
+    {
+        printf("%s\n", str);
+        return;
+    }
+
+    for (i = left; i <= right; i++)
+    {
+        /* Skip duplicate characters */
+        if (i != left && str[i] == str[left])
+            continue;
+
+        swap(&str[left], &str[i]);
+
+        permute(str, left + 1, right);
+
+        /* Backtracking */
+        swap(&str[left], &str[i]);
+    }
+}
+
+int main()
+{
+    char str[100];
+
+    printf("Enter a string: ");
+    scanf("%s", str);
+
+    printf("Distinct permutations are:\n");
+
+    permute(str, 0, strlen(str) - 1);
+
+    return 0;
+}
