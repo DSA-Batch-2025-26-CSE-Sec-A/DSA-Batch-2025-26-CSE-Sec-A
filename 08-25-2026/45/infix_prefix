@@ -1,0 +1,98 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+#define MAX 100
+
+char stack[MAX];
+int top = -1;
+
+void push(char c) {
+    stack[++top] = c;
+}
+
+char pop() {
+    return stack[top--];
+}
+
+char peek() {
+    return stack[top];
+}
+
+int precedence(char c) {
+    if (c == '^')
+        return 3;
+    if (c == '*' || c == '/')
+        return 2;
+    if (c == '+' || c == '-')
+        return 1;
+    return 0;
+}
+
+void reverse(char str[]) {
+    int i, j;
+    char temp;
+
+    for (i = 0, j = strlen(str) - 1; i < j; i++, j--) {
+        temp = str[i];
+        str[i] = str[j];
+        str[j] = temp;
+    }
+}
+
+int main() {
+    char infix[MAX], prefix[MAX];
+    int i, j = 0;
+    char ch;
+
+    printf("Enter infix expression: ");
+    scanf("%s", infix);
+
+    // Reverse the infix expression
+    reverse(infix);
+
+    // Replace '(' with ')' and vice versa
+    for (i = 0; infix[i] != '\0'; i++) {
+        if (infix[i] == '(')
+            infix[i] = ')';
+        else if (infix[i] == ')')
+            infix[i] = '(';
+    }
+
+    // Convert to postfix
+    for (i = 0; infix[i] != '\0'; i++) {
+        ch = infix[i];
+
+        if (isalnum(ch)) {
+            prefix[j++] = ch;
+        }
+        else if (ch == '(') {
+            push(ch);
+        }
+        else if (ch == ')') {
+            while (top != -1 && peek() != '(')
+                prefix[j++] = pop();
+
+            if (top != -1)
+                pop();
+        }
+        else {
+            while (top != -1 && precedence(peek()) > precedence(ch))
+                prefix[j++] = pop();
+
+            push(ch);
+        }
+    }
+
+    while (top != -1)
+        prefix[j++] = pop();
+
+    prefix[j] = '\0';
+
+    // Reverse postfix to get prefix
+    reverse(prefix);
+
+    printf("Prefix expression: %s\n", prefix);
+
+    return 0;
+}
