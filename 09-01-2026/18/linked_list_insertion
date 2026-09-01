@@ -1,0 +1,76 @@
+#include <stdio.h>
+#include <stdlib.h>
+struct Node {
+    int data;
+    struct Node* next;
+};
+struct Node* createNode(int data) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    if (!newNode) {
+        printf("Memory allocation failed!\n");
+        exit(1);
+    }
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
+}
+void insertAtPosition(struct Node** head, int data, int position) {
+    struct Node* newNode = createNode(data);
+    if (position == 1) {
+        newNode->next = *head;
+        *head = newNode;
+        return;
+    }
+    struct Node* current = *head;
+    for (int i = 1; i < position - 1 && current != NULL; i++) {
+        current = current->next;
+    }
+    if (current == NULL) {
+        printf("Position %d is out of range!\n", position);
+        free(newNode);
+    } 
+    else {
+        newNode->next = current->next;
+        current->next = newNode;
+    }
+}
+void display(struct Node* head) {
+    struct Node* temp = head;
+    printf("Linked List: ");
+    while (temp != NULL) {
+        printf("%d -> ", temp->data);
+        temp = temp->next;
+    }
+    printf("NULL\n");
+}
+int main() {
+    struct Node* head = NULL;
+    insertAtPosition(&head, 10, 1);
+    insertAtPosition(&head, 20, 2);
+    insertAtPosition(&head, 30, 3);
+    printf("--- Initial Linked List ---\n");
+    display(head);
+
+    int pos1, val1, pos2, val2;
+    printf("\n--- First Insertion ---\n");
+    printf("Enter value to insert: ");
+    scanf("%d", &val1);
+    printf("Enter position to insert %d at: ", val1);
+    scanf("%d", &pos1);
+
+    insertAtPosition(&head, val1, pos1);
+    printf("After 1st insertion:\n");
+    display(head);
+
+    printf("\n--- Second Insertion ---\n");
+    printf("Enter value to insert: ");
+    scanf("%d", &val2);
+    printf("Enter position to insert %d at: ", val2);
+    scanf("%d", &pos2);
+
+    insertAtPosition(&head, val2, pos2);
+    printf("After 2nd insertion:\n");
+    display(head);
+
+    return 0;
+}
