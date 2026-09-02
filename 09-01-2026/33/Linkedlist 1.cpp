@@ -1,0 +1,55 @@
+#include <stdio.h>
+#include <stdlib.h>
+//Structure of the node
+struct node {
+    int data;
+    struct node *next;
+};
+//Function to insert a node at a given position
+void insertAtPosition(struct node **head, int data, int position) {
+    struct node *newNode = (struct node *)malloc(sizeof(struct node));
+    newNode->data = data;
+    newNode->next = NULL;
+// If inserting at the head (position 0), update the head pointer
+    if (position == 0) {
+        newNode->next = *head;
+        *head = newNode;
+        return;
+    }
+// Traverse the list to find the node before the desired position
+    struct node *current = *head;
+    for (int i = 0; i < position - 1 && current != NULL; i++) {
+        current = current->next;
+    }
+// If the current node is NULL, the position is out of bounds
+    if (current == NULL) {
+        printf("Position out of bounds\n");
+        free(newNode);
+        return;
+    }
+// Insert the new node at the specified position 
+    newNode->next = current->next;
+    current->next = newNode;
+}
+// Function to display the linked list
+void displayList(struct node *head) {
+    struct node *current = head;
+    while (current != NULL) {
+        printf("%d -> ", current->data);
+        current = current->next;
+    }
+    printf("NULL\n");
+}
+// Main function to test the insertAtPosition function
+int main() {
+    struct node *head = NULL;
+
+    insertAtPosition(&head, 10, 0); // Insert 10 at position 0
+    insertAtPosition(&head, 20, 1); // Insert 20 at position 1
+    insertAtPosition(&head, 30, 1); // Insert 30 at position 1
+    insertAtPosition(&head, 40, 3); // Insert 40 at position 3
+
+    displayList(head); // Display the linked list
+
+    return 0;
+}
