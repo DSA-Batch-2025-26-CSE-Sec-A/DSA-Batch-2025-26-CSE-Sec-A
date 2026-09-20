@@ -12,6 +12,9 @@ int main()
     int n;
     printf("Enter the number ");
     scanf("%d", &n);
-    printf("%d", fibonacci(n));
+    printf("Fibonacci Series: ");
+    for (int i = 0; i <= n; i++) {
+    printf("%d", fibonacci(n));}
+    printf("\t");
     return 0;
 }
